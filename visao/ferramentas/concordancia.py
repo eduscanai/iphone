@@ -91,6 +91,8 @@ def main():
     nome_a, na, obs_a = ler(args.a)
     nome_b, nb, obs_b = ler(args.b)
     comuns = sorted(set(na) & set(nb))
+    if not comuns:
+        sys.exit("Nenhuma nota preenchida em comum nas duas planilhas ainda.")
     so_um = sorted({k[0] for k in set(na) ^ set(nb)})
     if so_um:
         print(f"Aviso: aparelhos/faces avaliados por só um lado: {', '.join(so_um)}\n")

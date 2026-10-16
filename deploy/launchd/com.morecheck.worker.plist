@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Worker no Mac da loja (D6). Instalar:
+     sed "s|__USUARIO__|$USER|g; s|__RAIZ__|$HOME/morecheck|g" deploy/launchd/com.morecheck.worker.plist > ~/Library/LaunchAgents/com.morecheck.worker.plist
+     launchctl load ~/Library/LaunchAgents/com.morecheck.worker.plist
+     Lê ~/.morecheck/producao.env. Logs em ~/.morecheck/logs/. -->
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.morecheck.worker</string>
+  <key>WorkingDirectory</key><string>__RAIZ__/visao</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/opt/homebrew/bin/uv</string><string>run</string><string>python</string><string>-m</string><string>visao.worker</string>
+  </array>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>StandardOutPath</key><string>/Users/__USUARIO__/.morecheck/logs/worker.log</string>
+  <key>StandardErrorPath</key><string>/Users/__USUARIO__/.morecheck/logs/worker.log</string>
+</dict>
+</plist>

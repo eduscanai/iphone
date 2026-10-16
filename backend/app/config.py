@@ -54,7 +54,7 @@ class Config(BaseSettings):
     estetica_percentual_holdout: int = 10  # % dos aparelhos (por hash do IMEI) no conjunto de teste
 
     visao_worker_tokens: str = Field(default="", repr=False)  # lista separada por vírgula
-    painel_dir: Path | None = None  # build do painel (painel/dist) servido em /painel
+    painel_dir: Path | None = None  # build do painel servido em /painel (padrão: painel/dist do repositório)
 
     @property
     def tokens_worker(self) -> list[str]:

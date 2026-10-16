@@ -200,3 +200,14 @@ def test_yaml_recusa_zona_sem_grupo():
     y["grupos"]["moldura"].remove("porta")
     with pytest.raises(ValidationError, match="sem grupo"):
         cr.Criterio.model_validate(y)
+
+
+def test_cadastro_de_modelos_coerente():
+    from app.estetica import dimensoes
+
+    ids = [i for m in dimensoes._LISTA for i in m.identificadores]
+    assert len(ids) == len(set(ids)), "identificador repetido"
+    for m in dimensoes._LISTA:
+        assert 60 < m.largura_mm < 80 and 120 < m.altura_mm < 170 and 5 < m.espessura_mm < 9, m.nome
+        assert m.tela in ("oled", "lcd") and m.moldura in ("aluminio", "aco", "titanio")
+    assert dimensoes.MODELOS["iPhone18,4"].nome == "iPhone Air"

@@ -1,0 +1,15 @@
+# Backend (VPS). Instalar: sudo cp deploy/systemd/*.service deploy/systemd/*.timer /etc/systemd/system/
+# Ajuste User e WorkingDirectory. Ponha um proxy com TLS (Caddy ou nginx) na frente da porta 8000.
+[Unit]
+Description=Morecheck — backend da nota estética
+After=network-online.target postgresql.service
+
+[Service]
+User=morecheck
+WorkingDirectory=/opt/morecheck/backend
+ExecStart=/usr/local/bin/uv run uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 2
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

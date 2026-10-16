@@ -1,0 +1,14 @@
+# Worker de visão na VPS (só CPU: camada a). Com detector/PatchCore, prefira o Mac da loja (launchd).
+[Unit]
+Description=Morecheck — worker de visão
+After=network-online.target
+
+[Service]
+User=morecheck
+WorkingDirectory=/opt/morecheck/visao
+ExecStart=/usr/local/bin/uv run python -m visao.worker
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

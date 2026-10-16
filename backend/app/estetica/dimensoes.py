@@ -9,6 +9,11 @@ retificada (visao/ferramentas/marcar_zonas.py) e conferir com o técnico.
 from dataclasses import dataclass, field
 
 
+FONTE_DIMENSOES = ("Dimensões: https://www.apple.com/iphone/compare/ (conferido em 2026-10-16). "
+                   "Identificadores: https://ipsw.io/public/blog/iphone-17-firmware e everymac.com. "
+                   "Materiais: VERIFICAR na página de especificações de cada modelo.")
+
+
 @dataclass(frozen=True)
 class Retangulo:  # mm, no referencial da face (guia 7.2)
     x: float
@@ -33,7 +38,7 @@ class Modelo:
     moldura: str  # aluminio, aco ou titanio
     traseira: str  # vidro_brilhante ou vidro_fosco
     zonas: dict[str, dict[str, tuple[Retangulo, ...]]] = field(default_factory=dict)
-    fonte: str = "https://support.apple.com/pt-br/docs/iphone (consultar a página do modelo)"
+    fonte: str = FONTE_DIMENSOES
     verificado: bool = False
 
     @property
@@ -52,7 +57,8 @@ def _m(ids, nome, larg, alt, esp, tela, moldura, traseira):
                   raio_canto_mm=0.0, tela=tela, moldura=moldura, traseira=traseira)
 
 
-# Valores das especificações técnicas da Apple (VERIFICAR). Materiais: VERIFICAR por modelo.
+# Dimensões conferidas na Apple em 2026-10-16. `verificado` continua False até as zonas e o raio
+# de canto serem medidos numa foto retificada e conferidos com o técnico (Apêndice A, passo 4).
 _LISTA = [
     _m(("iPhone11,8",), "iPhone XR", 75.7, 150.9, 8.3, "lcd", "aluminio", "vidro_brilhante"),
     _m(("iPhone12,1",), "iPhone 11", 75.7, 150.9, 8.3, "lcd", "aluminio", "vidro_brilhante"),
@@ -80,7 +86,14 @@ _LISTA = [
     _m(("iPhone17,4",), "iPhone 16 Plus", 77.8, 160.9, 7.8, "oled", "aluminio", "vidro_fosco"),
     _m(("iPhone17,1",), "iPhone 16 Pro", 71.5, 149.6, 8.25, "oled", "titanio", "vidro_fosco"),
     _m(("iPhone17,2",), "iPhone 16 Pro Max", 77.6, 163.0, 8.25, "oled", "titanio", "vidro_fosco"),
-    # iPhone 16e, Air e linha 17: VERIFICAR identificadores e medidas na Apple antes de cadastrar.
+    _m(("iPhone17,5",), "iPhone 16e", 71.5, 146.7, 7.8, "oled", "aluminio", "vidro_fosco"),
+    _m(("iPhone18,3",), "iPhone 17", 71.5, 149.6, 7.95, "oled", "aluminio", "vidro_fosco"),
+    _m(("iPhone18,4",), "iPhone Air", 74.7, 156.2, 5.64, "oled", "titanio", "vidro_fosco"),
+    # 17 Pro: corpo de alumínio com traseira de vidro só em parte (VERIFICAR as zonas da traseira)
+    _m(("iPhone18,1",), "iPhone 17 Pro", 71.9, 150.0, 8.75, "oled", "aluminio", "vidro_fosco"),
+    _m(("iPhone18,2",), "iPhone 17 Pro Max", 78.0, 163.4, 8.75, "oled", "aluminio", "vidro_fosco"),
+    _m(("iPhone18,5",), "iPhone 17e", 71.5, 146.7, 7.8, "oled", "aluminio", "vidro_fosco"),
+    # Linha 18 e iPhone Duo: cadastrar quando os identificadores estiverem confirmados.
 ]
 
 MODELOS: dict[str, Modelo] = {i: m for m in _LISTA for i in m.identificadores}

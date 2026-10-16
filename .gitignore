@@ -1,0 +1,26 @@
+.DS_Store
+.env
+*.env
+__pycache__/
+.venv/
+node_modules/
+
+# Fase 0: fotos e saídas dos protótipos
+visao/prototipos/fotos/
+visao/prototipos/saida/
+visao/dados/
+visao/modelos/
+
+# Firmware
+hardware/cabine-luz/include/segredos.h
+hardware/cabine-luz/.pio/
+
+# iOS (o .xcodeproj é gerado pelo xcodegen a partir do project.yml)
+app-ios/Morecheck.xcodeproj/
+app-ios/Pacotes/*/.build/
+.build/
+xcuserdata/
+
+# Painel
+painel/node_modules/
+painel/dist/

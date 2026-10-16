@@ -1,0 +1,17 @@
+schema: spec-driven
+
+context: |
+  Projeto: Morecheck — avaliação de iPhones usados (~4.000 aparelhos/mês).
+  Idioma: pt-BR em tudo (código, comentários, documentos, commits).
+  Stack: backend FastAPI + Postgres (Alembic); painel React; app iOS (Swift, xcodegen,
+  só API pública); worker de visão em Python (uv, OpenCV, anomalib, RF-DETR);
+  firmware ESP32 (PlatformIO, Arduino).
+  Guia de implementação: docs/guia-claude-code-nota-estetica.md (fonte dos contratos, seção 7).
+  PRD: docs/prd-nota-estetica.md.
+  Segredos só em ~/.morecheck/producao.env. Nada de dependência AGPL/GPL sem aprovação.
+
+rules:
+  design:
+    - Manter uma seção "Decisões" com data para cada ajuste R1–R22 e decisão D1–D12 do guia
+  tasks:
+    - Uma fase do guia por grupo de tarefas; marcar as PARADAS (ação ou decisão humana)

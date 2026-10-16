@@ -115,6 +115,9 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--saida", type=Path, required=True)
     args = ap.parse_args()
+    from visao import ambiente
+
+    ambiente.carregar()
     import psycopg
 
     url = os.environ["DATABASE_URL"].replace("postgresql+psycopg://", "postgresql://")

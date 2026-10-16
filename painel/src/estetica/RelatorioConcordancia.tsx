@@ -22,7 +22,9 @@ interface ConfigLoja { modo: string; percentual_cego: number; sombra_iniciada_em
 
 const kappa = (k?: number | null) => (k == null ? '—' : k.toFixed(3).replace('.', ','))
 
-export function RelatorioConcordancia({ onAbrir }: { onAbrir: (id: string) => void }) {
+const MODOS: [string, string][] = [['desligado', 'Desligado'], ['assistido', 'Assistido'], ['automatico', 'Automático']]
+
+export function RelatorioConcordancia({ onAbrir, admin }: { onAbrir: (id: string) => void; admin: boolean }) {
   const [filtros, setFiltros] = useState({ de: '', ate: '', modelo: '', face: '', tecnico: '', incluir_nao_cegas: false })
   const [rel, setRel] = useState<Relatorio | null>(null)
   const [cfg, setCfg] = useState<ConfigLoja | null>(null)
@@ -114,17 +116,19 @@ export function RelatorioConcordancia({ onAbrir }: { onAbrir: (id: string) => vo
           {cfg.fila_parada && <p className="erro">Fila de visão parada há mais de 5 minutos: confira o worker.</p>}
           {cfg.ultimo_aviso && <p className="aviso">Automático desligado em {new Date(cfg.ultimo_aviso.quando).toLocaleString('pt-BR')}: {cfg.ultimo_aviso.motivos.join('; ')}</p>}
           <div className="linha">
-            {['desligado', 'assistido', 'automatico'].map((m) => (
-              <button key={m} type="button" className={cfg.modo === m ? 'ativa' : ''} onClick={() => gravar(m, cfg.percentual_cego)}>{m}</button>
+            {MODOS.map(([m, rotulo]) => (
+              <button key={m} type="button" className={cfg.modo === m ? 'ativa' : ''} disabled={!admin}
+                onClick={() => gravar(m, cfg.percentual_cego)}>{rotulo}</button>
             ))}
-            <label>Amostra cega <input type="number" min={0} max={100} defaultValue={cfg.percentual_cego}
-              onBlur={(e) => gravar(cfg.modo, Number(e.target.value))} /> %</label>
+            <label>Amostra cega <input type="number" min={0} max={100} defaultValue={cfg.percentual_cego} disabled={!admin}
+              onBlur={(e) => Number(e.target.value) !== cfg.percentual_cego && gravar(cfg.modo, Number(e.target.value))} /> %</label>
           </div>
+          {!admin && <p className="pequeno">Só o administrador da loja muda a configuração.</p>}
           <p className="pequeno">Modo sombra (100% cego) {cfg.sombra_iniciada_em ? `desde ${new Date(cfg.sombra_iniciada_em).toLocaleDateString('pt-BR')}` : 'não iniciado'}. Ligar o automático é decisão do responsável.</p>
           {msgCfg && <p role="status">{msgCfg}</p>}
         </section>
       )}
-      <Cabines />
+      {admin && <Cabines />}
     </div>
   )
 }

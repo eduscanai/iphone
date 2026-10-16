@@ -46,13 +46,11 @@ def avaliar(db: Session, loja_id, sombra_iniciada_em: datetime | None) -> dict:
     elif datetime.now(timezone.utc) - sombra_iniciada_em < timedelta(days=DIAS_SOMBRA):
         dias = (datetime.now(timezone.utc) - sombra_iniciada_em).days
         motivos.append(f"modo sombra há {dias} dia(s) (mínimo {DIAS_SOMBRA})")
-    return {
-        "passou": not motivos,
-        "motivos": motivos,
-        "metricas": m,
-        "observacao": (f"Com {m.get('n', 0)} aparelhos e zero erros de 2 notas, a taxa real desse erro fica abaixo de "
-                       f"~{3 / max(m.get('n', 1), 1):.1%} (95%, regra de três)."),
-    }
+    n = m.get("n", 0)
+    observacao = ("Ainda não há aparelhos cegos do conjunto de teste avaliados." if n == 0 else
+                  f"Com {n} aparelhos e zero erros de 2 notas, a taxa real desse erro fica abaixo de "
+                  f"~{100 * 3 / n:.1f}% (95%, regra de três).".replace(".", ",", 1))
+    return {"passou": not motivos, "motivos": motivos, "metricas": m, "observacao": observacao}
 
 
 def monitorar(db: Session, loja_id) -> bool:

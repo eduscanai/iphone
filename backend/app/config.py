@@ -10,6 +10,7 @@ from pathlib import Path
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+# O último arquivo vence: se os dois existirem, produção vence desenvolvimento.
 ARQUIVOS_ENV = (
     Path.home() / ".morecheck" / "desenvolvimento.env",
     Path.home() / ".morecheck" / "producao.env",
@@ -53,6 +54,7 @@ class Config(BaseSettings):
     estetica_percentual_holdout: int = 10  # % dos aparelhos (por hash do IMEI) no conjunto de teste
 
     visao_worker_tokens: str = Field(default="", repr=False)  # lista separada por vírgula
+    painel_dir: Path | None = None  # build do painel (painel/dist) servido em /painel
 
     @property
     def tokens_worker(self) -> list[str]:

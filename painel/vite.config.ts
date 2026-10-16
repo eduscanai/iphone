@@ -7,6 +7,8 @@ const api = process.env.MORECHECK_API ?? 'http://127.0.0.1:8000'
 const rotas = ['/estetica', '/registros', '/arquivos', '/laudo', '/cabines', '/verificar']
 
 export default defineConfig({
+  // servido pelo backend em /painel/ (build); em desenvolvimento, na raiz
+  base: process.env.NODE_ENV === 'production' ? '/painel/' : '/',
   plugins: [react()],
   server: { proxy: Object.fromEntries(rotas.map((r) => [r, api])) },
   test: { environment: 'jsdom', setupFiles: ['./src/testes/preparar.ts'], globals: true },

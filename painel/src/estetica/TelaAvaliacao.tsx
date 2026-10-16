@@ -25,6 +25,10 @@ function camadasDaFace(fotos: FotoSessao[], face: Face): (Camada & { foto_id: st
   })
 }
 
+const STATUS: Record<string, string> = {
+  capturando: 'Capturando', processando: 'Processando', aguardando_tecnico: 'Aguardando técnico', avaliada: 'Avaliada', erro: 'Erro',
+}
+
 const zonaPadrao = (face: Face) => (face === 'frente' ? 'tela' : face === 'traseira' ? 'vidro_traseiro' : 'moldura')
 
 export function TelaAvaliacao({ sessaoId, onVoltar }: { sessaoId: string; onVoltar: () => void }) {
@@ -177,7 +181,7 @@ export function TelaAvaliacao({ sessaoId, onVoltar }: { sessaoId: string; onVolt
         <button type="button" className="voltar" onClick={onVoltar}>← Fila</button>
         <h1>{d.aparelho.nome ?? d.aparelho.identificador} <small>{d.aparelho.cor}</small></h1>
         {d.cega && <span className="selo-cega">cega</span>}
-        <span className="status">{d.status.replace('_', ' ')}</span>
+        <span className="status">{STATUS[d.status] ?? d.status}</span>
       </header>
 
       <aside className="faces">

@@ -18,7 +18,7 @@ from datetime import datetime, timezone
 
 import httpx
 
-from . import config, fusao, pipeline
+from . import ambiente, config, fusao, pipeline
 from . import modelos as reg_modelos
 from .cliente_api import ClienteAPI
 
@@ -121,6 +121,7 @@ def main(argv=None):
     ap.add_argument("--uma-vez", action="store_true")
     ap.add_argument("--tipos", default="foto,fusao")
     args = ap.parse_args(argv)
+    ambiente.carregar()
     logging.basicConfig(level=logging.INFO, format="%(message)s", stream=sys.stdout)
     logging.getLogger("httpx").setLevel(logging.WARNING)  # sem uma linha por consulta à fila
     modelos = None if args.nulo else reg_modelos.carregar()  # uma vez, mantidos em memória (12.2)

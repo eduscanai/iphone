@@ -29,6 +29,12 @@ def _sessao_da_loja(db: Session, sessao_id, usuario: Usuario) -> tuple[Sessao, S
     return s, se
 
 
+@rotas.get("/estetica/eu")
+def eu(usuario: Usuario = Depends(usuario_atual)):
+    """Quem está usando o painel (o painel mostra configuração e cabines só para o admin)."""
+    return {"nome": usuario.nome, "papel": usuario.papel, "loja_id": str(usuario.loja_id)}
+
+
 @rotas.get("/estetica/fila")
 def fila_avaliacao(status: str = StatusSessaoEstetica.aguardando_tecnico, usuario: Usuario = Depends(usuario_atual),
                    db: Session = Depends(obter_db)):

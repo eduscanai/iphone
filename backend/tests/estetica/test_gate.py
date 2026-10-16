@@ -47,6 +47,9 @@ def test_gate_recusa_sem_dados(cliente, db):
     r = cliente.put("/estetica/config", headers=l.h_admin, json={"modo": "automatico", "percentual_cego": 10})
     assert r.status_code == 409
     assert any("aparelhos avaliados: 0" in m for m in r.json()["detail"]["motivos"])
+    rel = cliente.get("/estetica/concordancia", headers=l.h_tecnico).json()
+    assert rel["gate"]["observacao"] == "Ainda não há aparelhos cegos do conjunto de teste avaliados."
+    assert cliente.get("/estetica/eu", headers=l.h_admin).json()["papel"] == "admin"
     assert cliente.put("/estetica/config", headers=l.h_tecnico, json={"modo": "assistido", "percentual_cego": 10}).status_code == 403
 
 
@@ -62,6 +65,7 @@ def test_gate_exige_sombra_de_14_dias(cliente, db):
     assert r.status_code == 200, r.text
     rel = cliente.get("/estetica/concordancia", headers=l.h_tecnico).json()
     assert rel["geral"]["n"] == 200 and rel["geral"]["exata"] == 1 and rel["gate"]["passou"]
+    assert "abaixo de ~1,5%" in rel["gate"]["observacao"]
 
 
 def test_gate_recusa_erro_de_2_notas(cliente, db):

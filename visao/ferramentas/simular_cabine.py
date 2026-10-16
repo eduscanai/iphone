@@ -40,6 +40,9 @@ def main():
     ap.add_argument("--orientacao", default="topo_para_cima", help="posição do topo na imagem (perfil da cabine)")
     ap.add_argument("--espera-s", type=float, default=120)
     args = ap.parse_args()
+    from visao import ambiente
+
+    ambiente.carregar()
     dados, sessao = json.loads(args.dados.read_text()), json.loads(args.sessao.read_text())
     cab = httpx.Client(base_url=args.api, timeout=60, headers={"Authorization": f"Bearer {dados['token_cabine']}"})
     tec = httpx.Client(base_url=args.api, timeout=60, headers={"Authorization": f"Bearer {dados['token_tecnico']}"})

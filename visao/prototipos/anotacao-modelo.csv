@@ -1,0 +1,5 @@
+aparelho,modelo,cor,face,tipo,local,tamanho_mm_aprox,visivel_olho_nu,nota_tecnico
+ap1,iPhone 13,meia-noite,frente,risco,"terço superior, perto do notch",8,nao,B
+ap1,iPhone 13,meia-noite,frente,risco,"centro, diagonal",15,sim,B
+ap1,iPhone 13,meia-noite,traseira,,,,,B
+ap2,iPhone 11,preto,moldura,amassado,"quina inferior esquerda",2,sim,C

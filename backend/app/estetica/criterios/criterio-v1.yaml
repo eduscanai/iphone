@@ -1,0 +1,55 @@
+# Critério de nota estética v1 (guia, seção 16.2; documento: docs/nota-estetica-criterio.md).
+# Regras por grupo de zona, da pior nota para a melhor; vale a primeira que casar.
+# `a_definir: true` = lacuna do PRD (seção 16.4): a nota sai, mas nunca automática.
+# Mudou uma regra → criar criterio-v2.yaml; nunca editar esta versão depois de aprovada.
+versao: criterio-v1
+fonte: docs/nota-estetica-criterio.md
+notas: [A, B, C, D]
+
+grupos:
+  tela:     [tela, recorte_tela]
+  traseira: [vidro_traseiro, ilha_camera, lente_camera]
+  moldura:  [moldura, quina, botao, porta]
+
+regras:
+  tela:
+    padrao: A
+    lista:
+      - {nota: D, tipos: [trinca], motivo: "Trinca na tela"}
+      - {nota: D, tipos: [lascado], maior_dimensao_mm_acima: 2, motivo: "Lascado no vidro maior que 2 mm"}
+      - {nota: C, tipos: [lascado], motivo: "Lascado no vidro até 2 mm", a_definir: true}               # L1
+      - {nota: C, tipos: [mancha, descascado], motivo: "Mancha ou descascado", a_definir: true}         # L7
+      - {nota: C, tipos: [risco], visibilidade: visivel, motivo: "Risco visível"}
+      - {nota: C, tipos: [risco], quantidade_acima: 5, motivo: "Mais de 5 riscos"}                      # L10: por face
+      - {nota: C, tipos: [risco], comprimento_mm_acima: 15, motivo: "Risco maior que 15 mm"}
+      - {nota: B, tipos: [risco], quantidade_acima: 2, motivo: "De 3 a 5 riscos só rasante"}
+      - {nota: B, tipos: [risco], comprimento_mm_acima: 5, motivo: "Risco só rasante entre 5 e 15 mm"}
+  traseira:
+    padrao: A
+    lista:
+      - {nota: D, tipos: [trinca], motivo: "Vidro traseiro ou lente trincados"}
+      - {nota: D, tipos: [lascado], maior_dimensao_mm_acima: 2, motivo: "Lascado maior que 2 mm", a_definir: true}  # L3
+      - {nota: C, tipos: [lascado], motivo: "Lascado até 2 mm", a_definir: true}                        # L3
+      - {nota: C, tipos: [mancha, descascado], motivo: "Mancha ou descascado", a_definir: true}         # L7
+      - {nota: C, tipos: [risco], visibilidade: visivel, motivo: "Risco visível"}
+      - {nota: B, tipos: [risco], motivo: "Riscos leves só rasante", a_definir: true}                   # L2
+  moldura:
+    padrao: A
+    lista:
+      - {nota: D, tipos: [amassado], maior_dimensao_mm_acima: 3, motivo: "Amassado maior que 3 mm"}
+      - {nota: C, tipos: [amassado], motivo: "Amassado até 3 mm"}
+      - {nota: C, tipos: [lascado, descascado], motivo: "Lascado ou descascado de pintura"}
+      - {nota: C, tipos: [desgaste], motivo: "Desgaste nas quinas"}
+      - {nota: C, tipos: [risco], maior_dimensao_mm_acima: 3, motivo: "Marca maior que 3 mm", a_definir: true}  # L5
+      - {nota: B, tipos: [risco], maior_dimensao_mm_acima: 1, motivo: "Marcas leves até 3 mm"}
+      - {nota: B, tipos: [risco], quantidade_acima: 2, motivo: "Mais de 2 marcas até 1 mm"}
+
+gerais:
+  nota_final: pior_face
+  no_minimo:                                   # a face fica com esta nota ou pior
+    - {nota: D, tipos: [trinca], zonas: [tela, vidro_traseiro, lente_camera], motivo: "Trinca em vidro"}
+    - {nota: C, tipos: [risco], zonas: [lente_camera], motivo: "Risco sobre a lente da câmera"}
+
+anomalia:                                      # defeitos sem classe (R22, L8)
+  tratar_como: risco
+  exige_revisao: true

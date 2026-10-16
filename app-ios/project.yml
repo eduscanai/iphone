@@ -1,0 +1,36 @@
+# Projeto do app (xcodegen). STUB: no repositório real, os arquivos de Sources/Cabine e
+# Sources/Estetica entram no project.yml existente do app Morecheck.
+name: Morecheck
+options:
+  bundleIdPrefix: com.morecheck
+  deploymentTarget:
+    iOS: "17.0"
+packages:
+  CabineNucleo:
+    path: Pacotes/CabineNucleo
+targets:
+  Morecheck:
+    type: application
+    platform: iOS
+    sources: [Sources]
+    dependencies:
+      - package: CabineNucleo
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.morecheck.app
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        SWIFT_VERSION: "5.0"
+        TARGETED_DEVICE_FAMILY: "1"
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_NSCameraUsageDescription: "A cabine fotografa o aparelho avaliado para a nota estética."
+        INFOPLIST_KEY_NSLocalNetworkUsageDescription: "A cabine controla as luzes pela rede local."
+    info:
+      path: Sources/App/Info.plist
+      properties:
+        NSBonjourServices: [_http._tcp]
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+        UILaunchScreen: {}

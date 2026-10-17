@@ -14,6 +14,23 @@ struct Inicio: View {
     @State private var token = ""
 
     var body: some View {
+        #if DEBUG
+        // Testes no simulador sem tocar na tela (argumentos de inicialização viram UserDefaults):
+        //   -testeTela qr -testeApi http://127.0.0.1:8000 -testeToken <token da sessão>
+        //   -testeTela cabine [-testeApi …] [-testeCodigo K7PQ-3XWD]
+        let d = UserDefaults.standard
+        if d.string(forKey: "testeTela") == "qr", let a = URL(string: d.string(forKey: "testeApi") ?? ""), let t = d.string(forKey: "testeToken") {
+            return AnyView(TelaQRPreto(api: a, token: t))
+        }
+        if d.string(forKey: "testeTela") == "cabine" {
+            if let a = d.string(forKey: "testeApi") { var c = ConfigCabine.atual; c.api = a; ConfigCabine.atual = c }
+            return AnyView(CabineView())
+        }
+        #endif
+        return AnyView(menu)
+    }
+
+    private var menu: some View {
         NavigationStack {
             List {
                 Section("iPhone da empresa") {

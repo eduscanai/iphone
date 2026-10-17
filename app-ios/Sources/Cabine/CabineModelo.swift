@@ -167,9 +167,13 @@ final class CabineModelo: ObservableObject {
                                            exigirTelaApagada: p.facePrincipal == .frente)
             }
             if let q, !q.ok {
-                aviso = "Foto reprovada: \(q.motivo ?? "")"
-                enviar(.fotoCapturada(ok: false))
-                return
+                if ConfigCabine.atual.ignorarQualidadeLocal {
+                    aviso = "Qualidade local reprovaria (\(q.motivo ?? "")), mas está desligada nos ajustes"
+                } else {
+                    aviso = "Foto reprovada: \(q.motivo ?? "")"
+                    enviar(.fotoCapturada(ok: false))
+                    return
+                }
             }
             let meta = MetadadosFoto(
                 camera: .init(modelo: Self.modeloAparelho, lente: "grande_angular_1x", app_versao: Self.versaoApp),
@@ -251,6 +255,23 @@ final class CabineModelo: ObservableObject {
         }
         do { try await api?.salvarPerfil(p) } catch { aviso = "Perfil salvo só no aparelho: \(Self.mensagem(error))" }
         enviar(.calibrada)
+    }
+
+    /// Dispara sem esperar o detector de estabilidade (aparelho que o Vision não acha, por exemplo).
+    func fotografarAgora() {
+        if case .posicionar = estado { enviar(.tecnicoPronto) }
+        if case .aguardandoEstabilidade = estado { enviar(.estavel) }
+    }
+
+    func refazerCalibracao() {
+        perfil = nil
+        try? FileManager.default.removeItem(at: Self.arquivo("perfil.json"))
+        estado = .semCalibracao
+    }
+
+    func esquecerPareamento() {
+        Pareamento.esquecer()
+        estado = .naoPareado
     }
 
     func pareou() {

@@ -24,3 +24,7 @@ xcuserdata/
 # Painel
 painel/node_modules/
 painel/dist/
+app-ios/build/
+
+# Assinatura local do app (cada pessoa)
+app-ios/Config/Local.xcconfig

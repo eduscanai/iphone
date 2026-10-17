@@ -8,16 +8,28 @@ options:
 packages:
   CabineNucleo:
     path: Pacotes/CabineNucleo
+configFiles:
+  Debug: Config/Base.xcconfig
+  Release: Config/Base.xcconfig
 targets:
   Morecheck:
     type: application
     platform: iOS
-    sources: [Sources]
+    sources:
+      - path: Sources
+        excludes: ["App/Info-Debug.plist"]
+    configFiles:
+      Debug: Config/Base.xcconfig
+      Release: Config/Base.xcconfig
     dependencies:
       - package: CabineNucleo
     settings:
+      configs:
+        # Debug libera HTTP para qualquer endereço (testes com o backend do Mac por IP; o iOS 17+
+        # bloqueia IP mesmo com NSAllowsLocalNetworking). Release continua restrito à rede local .local.
+        Debug:
+          INFOPLIST_FILE: Sources/App/Info-Debug.plist
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.morecheck.app
         MARKETING_VERSION: "0.1.0"
         CURRENT_PROJECT_VERSION: "1"
         SWIFT_VERSION: "5.0"

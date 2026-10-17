@@ -33,8 +33,11 @@ def main():
     from anomalib.models import Patchcore
 
     dados = Folder(name=args.familia, root=str(args.dados), normal_dir="normal", abnormal_dir="defeito")
-    modelo = Patchcore(backbone="wide_resnet50_2", layers=["layer2", "layer3"], coreset_sampling_ratio=0.1)
-    motor = Engine(default_root_dir=str(RAIZ / "modelos" / "patchcore" / args.familia))
+    # Notas brutas: o anomalib 2.x normaliza por padrão (0,5 = limiar dele, normais ≈ 0), o que
+    # anula o percentil dos blocos normais. O limiar é nosso (guia 15.6).
+    modelo = Patchcore(backbone="wide_resnet50_2", layers=["layer2", "layer3"], coreset_sampling_ratio=0.1,
+                       post_processor=False, evaluator=False, visualizer=False)
+    motor = Engine(default_root_dir=str(RAIZ / "modelos" / "patchcore" / args.familia), logger=False)
     motor.fit(model=modelo, datamodule=dados)
     previsoes = motor.predict(model=modelo, data_path=str(args.dados / "validacao"))
     notas = [float(p.pred_score) for lote in previsoes for p in (lote if isinstance(lote, list) else [lote])]

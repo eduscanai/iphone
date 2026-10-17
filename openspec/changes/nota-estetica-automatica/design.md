@@ -100,6 +100,8 @@ Lista completa no guia, seção 19. Principais:
 - [Vazamento entre treino e teste] → separar por aparelho; holdout congelado.
 - [Licença do detector] → RF-DETR em vez de Ultralytics (R15).
 - [Worker parado] → painel funciona sem sugestão; alerta se a fila passar de 5 min.
+- [PatchCore superestima o tamanho] (teste sintético de 2026-10-17: defeito de 2,4 mm medido como 12,4 mm; posição certa) → o mapa do PatchCore é grosseiro: serve para localizar. Toda `anomalia` já vai ao técnico (R22); a medida deve vir do detector (c) ou do técnico.
+- [Treino neste Mac de 8 GB] RF-DETR na GPU integrada não avança (troca de memória). Cadeia validada só em CPU, com 1 época → treinar num Mac com mais memória ou GPU (D6). No macOS, carga de dados com vários processos trava: `treinar_detector.py` usa 0 fora de CUDA.
 - [**Conflito R1 × R3**, achado em 2026-10-16 ao modelar o berço] Com espelhos a 45° nos 4 lados, cada barra rasante fica atrás de um espelho. Raio rasante vindo de ~20 cm a 1–2 cm de altura passa a ~8 mm sobre a cunha; cunha mais alta faz sombra na tela. Duas viradas com 2 espelhos não cobrem as 4 laterais (cada virada troca um só par de lados). → Cunha limitada a ~9,5 mm (espelho de 12 mm, `berco.scad`); foto `espelho_frente_ra` na fase 0 mede a sombra. Se houver sombra: espelhos rebatíveis (só na foto `ambiente`), barras mais altas (menos rasante) ou D3 = suportes em pé.
 
 ## Migration Plan
@@ -109,6 +111,8 @@ Lista completa no guia, seção 19. Principais:
 3. Lojas começam em `desligado` → `assistido` → (gate) `automatico`. Rollback: voltar a loja para `assistido` pelo painel ou automaticamente pelo monitoramento.
 
 ## Open Questions
+
+- **ESP32 por IP no app de produção** (achado em 2026-10-17): `NSAllowsLocalNetworking` libera HTTP só para nomes `.local` e sem domínio, não para IP; no iOS 17+ o acesso por IP costuma ser bloqueado. O guia (14.7) prevê IP fixo para redes com isolamento de clientes. Opções: (a) exigir rede com mDNS na loja; (b) `NSAllowsArbitraryLoads` no build de produção (justificar na revisão da Apple; app não listado); (c) HTTPS no ESP32 com certificado próprio (mais trabalho no firmware). Hoje: Debug libera tudo; Release só `.local`.
 
 - Decisões D1–D12 acima.
 - Lacunas L1–L10 do critério (guia, seção 16.4).

@@ -11,6 +11,7 @@ struct CabineView: View {
     @State private var chaveLuz = Pareamento.chaveLuz ?? ""
     @State private var cfg = ConfigCabine.atual
     @State private var erroPareamento: String?
+    @State private var mostrarAjustes = false
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -20,9 +21,56 @@ struct CabineView: View {
         }
         .background(Color.black)
         .foregroundStyle(.white)
-        .onAppear { m.iniciarCamera() }
+        .onAppear {
+            m.iniciarCamera()
+            #if DEBUG
+            if case .naoPareado = m.estado, let c = UserDefaults.standard.string(forKey: "testeCodigo") {
+                codigo = c
+                Task {
+                    do { try await Pareamento.ativar(qr: c, nome: "Cabine simulador"); m.pareou() }
+                    catch { erroPareamento = CabineModelo.mensagem(error) }
+                }
+            }
+            #endif
+        }
         .onDisappear { UIApplication.shared.isIdleTimerDisabled = false }
         .statusBarHidden()
+        .sheet(isPresented: $mostrarAjustes) { ajustes }
+    }
+
+    private var ajustes: some View {
+        NavigationStack {
+            Form {
+                Section("Servidor") {
+                    TextField("API", text: $cfg.api).textInputAutocapitalization(.never).keyboardType(.URL)
+                }
+                Section("Luzes (ESP32)") {
+                    TextField("http://morecheck-cabine-1.local", text: $cfg.esp32).textInputAutocapitalization(.never).keyboardType(.URL)
+                    SecureField("Chave da cabine", text: $chaveLuz)
+                    Toggle("Tem luz difusa de cima", isOn: $cfg.temDifusa)
+                }
+                Section("Captura") {
+                    Toggle("Voz", isOn: $cfg.vozLigada)
+                    Toggle("Não reprovar pela qualidade local (teste)", isOn: $cfg.ignorarQualidadeLocal)
+                }
+                Section {
+                    Button("Refazer calibração") { mostrarAjustes = false; m.refazerCalibracao() }
+                    Button("Esquecer pareamento", role: .destructive) { mostrarAjustes = false; m.esquecerPareamento() }
+                }
+            }
+            .navigationTitle("Ajustes da cabine")
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Salvar") {
+                        ConfigCabine.atual = cfg
+                        if !chaveLuz.isEmpty { Cofre.guardar(chaveLuz, conta: "chave-luz") }
+                        m.prepararServicos()
+                        mostrarAjustes = false
+                    }
+                }
+            }
+        }
+        .foregroundStyle(.primary)
     }
 
     @ViewBuilder private var conteudo: some View {
@@ -50,7 +98,11 @@ struct CabineView: View {
                 CalibracaoView(calibrador: Calibrador(modelo: m))
             }
         case .aguardandoQR:
-            Grande(titulo: "Aponte para o QR", subtitulo: "Tela do aparelho avaliado, depois dos testes funcionais.")
+            VStack(spacing: 24) {
+                Grande(titulo: "Aponte para o QR", subtitulo: "Tela do aparelho avaliado, depois dos testes funcionais.")
+                Button { mostrarAjustes = true } label: { Label("Ajustes", systemImage: "gearshape") }
+                    .buttonStyle(.bordered).tint(.white)
+            }
         case .abrindoSessao:
             Grande(titulo: "Abrindo sessão…", subtitulo: nil)
         case .apagandoTela(let c):
@@ -62,6 +114,10 @@ struct CabineView: View {
                 Text(c.passoAtual.instrucao).font(.title3).multilineTextAlignment(.center)
                 ProgressView(value: c.progresso).tint(.yellow)
                 Text(rotulo(m.estado, c)).font(.headline).foregroundStyle(.yellow)
+                if case .capturando = m.estado {} else {
+                    // Sem esperar o detector: o técnico garante que o aparelho está parado e no lugar.
+                    Button("Fotografar agora") { m.fotografarAgora() }.buttonStyle(.bordered).tint(.white)
+                }
             }
         case .concluindo, .aguardandoSugestao:
             Grande(titulo: "Processando…", subtitulo: "Pode tirar o aparelho do berço.")

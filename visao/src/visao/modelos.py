@@ -59,9 +59,10 @@ def carregar(pasta: str | Path | None = None, dispositivo: str | None = None) ->
         if meta.get("sha256") and sha256(pesos) != meta["sha256"]:
             raise RuntimeError(f"Hash dos pesos do detector não confere: {pesos}")
         try:
-            from rfdetr import RFDETRSmall  # VERIFICAR o nome da classe na versão instalada
+            from rfdetr import RFDETRSmall  # rfdetr 1.11: pesos próprios exigem trust_checkpoint
 
-            m.detector = RFDETRSmall(pretrain_weights=str(pesos), device=dispositivo)
+            # sha256 conferido acima: o checkpoint é nosso, então é seguro confiar nele
+            m.detector = RFDETRSmall(pretrain_weights=str(pesos), device=dispositivo, trust_checkpoint=True)
             m.versao_detector = f"{meta_p.parent.name}+{meta.get('sha256', '')[:7]}"
             m.limiares.update(meta.get("limiares", {}))
         except ImportError:

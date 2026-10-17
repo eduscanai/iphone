@@ -37,6 +37,21 @@ struct ConfigCabine: Codable, Equatable {
     var esp32: String = "http://morecheck-cabine-1.local"
     var temDifusa = false
     var vozLigada = true
+    /// Teste: não reprova foto pela qualidade local (as medidas continuam indo nos metadados).
+    /// Útil enquanto os limiares não foram calibrados num iPhone real (fase 2).
+    var ignorarQualidadeLocal = false
+
+    init() {}
+
+    // Decodifica arquivos antigos (sem os campos novos) sem perder a configuração.
+    init(from d: Decoder) throws {
+        let c = try d.container(keyedBy: CodingKeys.self)
+        api = try c.decodeIfPresent(String.self, forKey: .api) ?? api
+        esp32 = try c.decodeIfPresent(String.self, forKey: .esp32) ?? esp32
+        temDifusa = try c.decodeIfPresent(Bool.self, forKey: .temDifusa) ?? false
+        vozLigada = try c.decodeIfPresent(Bool.self, forKey: .vozLigada) ?? true
+        ignorarQualidadeLocal = try c.decodeIfPresent(Bool.self, forKey: .ignorarQualidadeLocal) ?? false
+    }
 
     static var atual: ConfigCabine {
         get { (UserDefaults.standard.data(forKey: "cabine.config")).flatMap { try? JSONDecoder().decode(Self.self, from: $0) } ?? .init() }

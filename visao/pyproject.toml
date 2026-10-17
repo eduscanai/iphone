@@ -3,9 +3,6 @@ name = "visao"
 version = "0.1.0"
 description = "Pipeline de visão da nota estética (Morecheck)"
 readme = "README.md"
-authors = [
-    { name = "Filipe Barbosa", email = "iabarbosa.filipe@gmail.com" }
-]
 requires-python = ">=3.12"
 dependencies = [
     "httpx>=0.28.1",
@@ -24,7 +21,7 @@ dependencies = [
 dados = ["psycopg[binary]>=3.2", "boto3>=1.35"]
 # Treino e inferência das camadas (b) e (c). Pesado (PyTorch): só no Mac/GPU que treina (D6).
 # VERIFICAR as versões e as licenças (guia 18) antes de instalar.
-treino = ["rfdetr>=1.3", "anomalib>=2.0", "torch>=2.5"]
+treino = ["rfdetr[train]>=1.11", "anomalib>=2.7", "torch>=2.5"]
 
 [build-system]
 requires = ["uv_build>=0.11.29,<0.12.0"]

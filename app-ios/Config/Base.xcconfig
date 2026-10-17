@@ -1,0 +1,7 @@
+// Configuração comum do app. Assinatura e bundle ID de cada pessoa ficam em Local.xcconfig
+// (fora do Git): copie Local.xcconfig.exemplo ou rode scripts/preparar_iphone.sh.
+PRODUCT_BUNDLE_IDENTIFIER = com.morecheck.app
+CODE_SIGN_STYLE = Automatic
+DEVELOPMENT_TEAM =
+
+#include? "Local.xcconfig"

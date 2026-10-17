@@ -1,0 +1,6 @@
+// Copie para Local.xcconfig (fora do Git) e preencha.
+// Team ID: Xcode → Settings → Accounts → seu Apple ID → o código de 10 caracteres do time
+// (conta gratuita funciona: "Personal Team").
+DEVELOPMENT_TEAM = ABCDE12345
+// Bundle ID único por pessoa (a conta gratuita não aceita um ID que outra pessoa já usou).
+PRODUCT_BUNDLE_IDENTIFIER = com.seunome.morecheck

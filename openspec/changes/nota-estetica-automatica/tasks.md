@@ -41,6 +41,8 @@
 - [x] 3.8 App: fila de envio persistente com Idempotency-Key; fim de sessão, sugestão e refazer
 - [x] 3.9 Tela QR + preto no aparelho avaliado (nativo)
 - [x] 3.10 Testes da lógica pura (swift test, 21 testes) e checagem de tipos do app contra o SDK iOS
+- [x] 3.10a App compilado e testado no simulador: tela QR + preto e pareamento (scripts/testar_simulador.sh)
+- [ ] 3.10b Teste num iPhone real por colaborador (docs/TESTE-IPHONE.md)
 - [ ] 3.11 Integrar Sources/Cabine e Sources/Estetica no app real (project.yml existente)
 - [ ] 3.12 PARADA: instalar no iPhone da cabine, calibrar, rodar o checklist 17.2; medir ≤ 60 s com técnico real; calibrar limiares (nitidez, movimento, mão)
 
@@ -71,7 +73,8 @@
 - [ ] 5.5 Rodar o worker como serviço (launchd no Mac ou systemd na VPS) — decidir D6
 - [x] 5.6 Ferramentas: baixar_bases.py (com trava de licença), exportar_dataset.py (divisão por aparelho), treinar_detector.py, treinar_patchcore.py, marcar_zonas.py
 - [x] 5.7 Camadas (b) e (c) integradas ao worker (carregadas se houver modelo; senão só a camada a)
-- [ ] 5.8 Baixar bases permitidas, pré-treinar o RF-DETR e medir nas fotos da fase 0 (VERIFICAR APIs)
+- [x] 5.8a Validar a cadeia de treino com dados sintéticos (rfdetr 1.11, anomalib 2.7): ferramentas/teste_treino.py; PatchCore com notas brutas
+- [ ] 5.8 Baixar bases permitidas, pré-treinar o RF-DETR (em máquina com mais memória/GPU) e medir nas fotos da fase 0
 - [ ] 5.9 Ajuste fino com as marcações do painel; PatchCore quando houver ≥ 100 faces nota A por família
 - [ ] 5.10 Verificar ≤ 10 s (p95) com fotos de 48 MP e recall ≥ 90% para riscos ≥ 3 mm
 - [ ] 5.11 PARADA: revisão semanal do relatório de concordância

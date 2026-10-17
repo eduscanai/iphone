@@ -3,15 +3,16 @@
 # /painel e o worker de visão. Configuração em ~/.morecheck/desenvolvimento.env.
 #
 #   scripts/subir_dev.sh            # só neste Mac (127.0.0.1:8000)
-#   scripts/subir_dev.sh --rede     # acessível na rede local (iPhone da cabine, outros computadores)
+#   scripts/subir_dev.sh --rede     # acessível na rede local pelo nome .local do Mac (iPhone)
+#   scripts/subir_dev.sh --rede --ip  # idem, pelo IP (se o iPhone não achar o nome .local)
 #   scripts/subir_dev.sh --nulo     # worker nulo (sem visão)
 set -euo pipefail
 RAIZ="$(cd "$(dirname "$0")/.." && pwd)"
 CASA="$HOME/.morecheck"
 RUN="$CASA/run"; LOGS="$CASA/logs"; TOKENS="$CASA/dev-tokens.json"
 mkdir -p "$RUN" "$LOGS"
-PORTA=8000; HOST=127.0.0.1; NULO=""
-for a in "$@"; do case "$a" in --rede) HOST=0.0.0.0 ;; --nulo) NULO="--nulo" ;; esac; done
+PORTA=8000; HOST=127.0.0.1; NULO=""; USAR_IP=0
+for a in "$@"; do case "$a" in --rede) HOST=0.0.0.0 ;; --ip) USAR_IP=1 ;; --nulo) NULO="--nulo" ;; esac; done
 
 if [ -f "$RUN/backend.pid" ] && kill -0 "$(cat "$RUN/backend.pid")" 2>/dev/null; then
   echo "Já está no ar. Para reiniciar: scripts/parar_dev.sh && scripts/subir_dev.sh"; exit 0
@@ -20,8 +21,11 @@ fi
 
 URL="http://127.0.0.1:$PORTA"
 if [ "$HOST" = 0.0.0.0 ]; then
-  IP=$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null || echo 127.0.0.1)
-  URL="http://$IP:$PORTA"
+  # Nome .local (mDNS): o iOS aceita HTTP para .local (NSAllowsLocalNetworking), não para IP.
+  URL="http://$(scutil --get LocalHostName).local:$PORTA"
+  if [ $USAR_IP = 1 ]; then
+    URL="http://$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1):$PORTA"
+  fi
 fi
 export URL_PUBLICA="$URL" MORECHECK_API_URL="http://127.0.0.1:$PORTA"
 
@@ -57,7 +61,7 @@ t = json.load(open(sys.argv[1])); url = sys.argv[2]
 print(f"""
 Pronto.
   Painel:  {url}/painel/
-  API:     {url}/docs
+  API:     {url}/docs   (no app do iPhone, use: {url})
   Token do técnico: {t['token_tecnico']}
   Token do admin:   {t['token_admin']}
   Logs:    ~/.morecheck/logs/   ·   Parar: scripts/parar_dev.sh

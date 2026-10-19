@@ -28,7 +28,7 @@ Tempo: ~1 h para preparar e ~1 h de testes. No fim você manda um pacote com os 
 1. **Baixar o projeto** e preparar o ambiente (instala o que faltar com Homebrew):
 
    ```bash
-   git clone <url-do-repositório> morecheck && cd morecheck
+   git clone https://github.com/eduscanai/iphone.git morecheck && cd morecheck
    scripts/configurar_dev.sh --instalar
    ```
    _Esperado:_ termina com "Pronto. Próximos passos".
